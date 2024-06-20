@@ -17,8 +17,8 @@ jobs:
           yyp=$(find ${{ github.workspace }} -name "*.yyp")
           echo "YYP file found at: $yyp"
           echo "yyp-path=$yyp" >> $(GITHUB_OUTPUT)
-      - name: ballin
       - id: write_file
+      - name: ballin
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'myTemporaryFile.keystore'
