@@ -5,8 +5,8 @@ on:
   workflow_call: #This line allows you to run the workflow from another workflow
 jobs:
   Build:
-  runs-on: ubuntu-latest
-  steps:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
@@ -28,7 +28,7 @@ jobs:
           echo '{ "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ WSpDRkRYVUBT }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ WSpDRkRYVUBT }}",  "machine.Platform Settings.Android.Keystore.alias": "${{ moussacre }}" # 📝 Your keystore alias }' \ > local_settings.json
       - name: Set up ffmpeg 
         uses: FedericoCarboni/setup-ffmpeg@v3
-        with: ffmpeg-version:'6.1.0'
+        with: ffmpeg-version: '6.1.0'
       - name: Set Up Android SDK platform-tools 
         run: |
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
@@ -37,15 +37,15 @@ jobs:
         uses: bscotch/igor-setup@v1
         id: igor
         with:
-        local-settings-override-file: ${{ github.workspace }}/local_settings.json
-        target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
-        access-key: ${{ a41c34c321bfd93a09756c428fc0a09c }} 
+          local-settings-override-file: ${{ github.workspace }}/local_settings.json
+          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
+          access-key: ${{ a41c34c321bfd93a09756c428fc0a09c }} 
       - name: use Igor build
         uses: bscotch/igor-build@v1
         id: build
         with:
-        yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
-        user-dir: ${{ steps.igor.outputs.user-dir }}
+            yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
+            user-dir: ${{ steps.igor.outputs.user-dir }}
       - name: upload build as artifact
         uses: actions/upload-artifact@v4
         with:
