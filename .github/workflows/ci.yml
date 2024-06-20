@@ -5,9 +5,8 @@ on:
   workflow_call: #This line allows you to run the workflow from another workflow
 jobs:
   Build:
-    runs-on: ubuntu-latest
-    steps:
-      # Check out the repository with the GameMaker project
+  runs-on: ubuntu-latest
+  steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
@@ -17,50 +16,39 @@ jobs:
         run: |
           yyp=$(find ${{ github.workspace }} -name "*.yyp")
           echo "YYP file found at: $yyp"
-          echo "yyp-path=$yyp" >> $GITHUB_OUTPUT
-      - name: Create the keystore file from secrets
-          id: write_file
-          uses: timheuer/base64-to-file@v1.2
-          with:
-            fileName: 'myTemporaryFile.keystore'
-            encodedString: ${{ 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 }} # 📝 Your keystore file encoded
-      - name: Create the local-settings-override-file for igor-setup
-        run: |
-          echo '{
-          "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", 
-          "machine.Platform Settings.Android.Keystore.keystore_password": "${{ WSpDRkRYVUBT }}", # 📝 Your keystore password
-          "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ WSpDRkRYVUBT }}", # 📝 Your keystore password
-          "machine.Platform Settings.Android.Keystore.alias": "${{ moussacre }}" # 📝 Your keystore alias
-          }' \
-          > local_settings.json
-      - name: Set up ffmpeg # This step may be removed when https://github.com/YoYoGames/GameMaker-Bugs/issues/4977 is fixed
-        uses: FedericoCarboni/setup-ffmpeg@v3
-        with:
-          ffmpeg-version: '6.1.0'
-      - name: Set Up Android SDK's platform-tools # The default Android SDK does not include platform-tools and its component `adb`, which is required by Igor for the Android build
-        run: |
-          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
-          --sdk_root=$ANDROID_SDK_ROOT \
-          "platform-tools"
-      #endregion
-      # This step sets up the GameMaker build CLI tool Igor https://github.com/bscotch/igor-setup
-      - name: use Igor Setup
-        uses: bscotch/igor-setup@v1
-        id: igor
-        with:
-          local-settings-override-file: ${{ github.workspace }}/local_settings.json
-          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
-          access-key: ${{ secrets.ACCESS_KEY }} # 📝 To generate your Access Key, check out the Access Key section of the GameMaker Manual's Building via Command Line page: https://manual.gamemaker.io/monthly/en/#t=Settings%2FBuilding_via_Command_Line.htm
-      # This step uses Igor to build the GameMaker project https://github.com/bscotch/igor-build
-      - name: use Igor build
-        uses: bscotch/igor-build@v1
-        id: build
-        with:
-          yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
-          user-dir: ${{ steps.igor.outputs.user-dir }}
-      - name: upload build as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: igor-build-ubuntu
-          path: ${{ steps.build.outputs.out-dir }}
-          retention-days: 1
+          echo "yyp-path=$yyp" >> $(GITHUB_OUTPUT)
+      - name: ballin
+      - id: write_file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'myTemporaryFile.keystore'
+          encodedString: ${{ secrets.KEYSTORE_BASE64 }} 
+      - name: Create the local-settings-override-file for igor-setup 
+        run: | 
+          echo '{ "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ WSpDRkRYVUBT }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ WSpDRkRYVUBT }}",  "machine.Platform Settings.Android.Keystore.alias": "${{ moussacre }}" # 📝 Your keystore alias }' \ > local_settings.json
+      - name: Set up ffmpeg 
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        with: ffmpeg-version:'6.1.0'
+      - name: Set Up Android SDK platform-tools 
+        run: |
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
+             --sdk_root=$ANDROID_SDK_ROOT \"platform-tools"
+      - name: use Igor Setup
+        uses: bscotch/igor-setup@v1
+        id: igor
+        with:
+        local-settings-override-file: ${{ github.workspace }}/local_settings.json
+        target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
+        access-key: ${{ a41c34c321bfd93a09756c428fc0a09c }} 
+      - name: use Igor build
+        uses: bscotch/igor-build@v1
+        id: build
+        with:
+        yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
+        user-dir: ${{ steps.igor.outputs.user-dir }}
+      - name: upload build as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: ${{ steps.build.outputs.out-dir }}
+          retention-days: 10
