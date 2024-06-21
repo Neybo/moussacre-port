@@ -16,8 +16,10 @@ jobs:
           lfs: true
 
       - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > myTemporaryFile.keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'myTemporaryFile.keystore'
+          encodedString: ${{ secrets.KEYSTORE_BASE64 }} 
 
       - name: Create local settings override file
         run: |
