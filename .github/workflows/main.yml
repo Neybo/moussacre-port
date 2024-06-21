@@ -1,53 +1,56 @@
-name: Continuous Integration for Android export
-on: 
-  push: #Uncomment this line to run the workflow on push
-  workflow_dispatch: #This line allows you to run the workflow manually from the GitHub Actions page
-  workflow_call: #This line allows you to run the workflow from another workflow
+name: Android CI
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           lfs: true
-      # This step finds the yyp file in the repository and saves the path to an output
-      - id: find_yyp
-      - name: Find the yyp file
-        run:  |
-          yyp=$(find ${{ github.workspace }} -name "*.yyp")
-          echo "YYP file found at: $yyp"
-          echo "yyp-path=$yyp" >> $(GITHUB_OUTPUT)
-      - id: write_file
-      - name: ballin
-        uses: timheuer/base64-to-file@v1.2
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > myTemporaryFile.keystore
+
+      - name: Create local settings override file
+        run: |
+          echo '{
+            "machine.Platform Settings.Android.Keystore.filename": "./myTemporaryFile.keystore",
+            "machine.Platform Settings.Android.Keystore.keystore_password": "${{ WSpDRkRYVUBT }}",
+            "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ WSpDRkRYVUBT }}",
+            "machine.Platform Settings.Android.Keystore.alias": "${{ moussacre }}"
+          }' > local_settings.json
+
+      - name: Set up ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
         with:
-          fileName: 'myTemporaryFile.keystore'
-          encodedString: ${{ secrets.KEYSTORE_BASE64 }} 
-      - name: Create the local-settings-override-file for igor-setup 
-        run:  | 
-          echo '{ "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ WSpDRkRYVUBT }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ WSpDRkRYVUBT }}",  "machine.Platform Settings.Android.Keystore.alias": "${{ moussacre }}" # 📝 Your keystore alias }' \ > local_settings.json
-      - name: Set up ffmpeg 
-        uses:  FedericoCarboni/setup-ffmpeg@v3
-        with:   
           ffmpeg-version: '7.0.1'
-      - name: Set Up Android SDK platform-tools 
-        run:  |
-            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
-             --sdk_root=$ANDROID_SDK_ROOT \"platform-tools"
-      - name: use Igor Setup
+
+      - name: Set up Android SDK platform-tools
+        run: |
+          ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools"
+
+      - name: Use Igor Setup
         uses: bscotch/igor-setup@v1
-        id: igor
         with:
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
-          target-yyp: ${{ steps.find_yyp.outputs.yyp-path }}
-          access-key: ${{ a41c34c321bfd93a09756c428fc0a09c }} 
-      - name: use Igor build
+          target-yyp: ${{ github.workspace }}/**/*.yyp
+          access-key: ${{ a41c34c321bfd93a09756c428fc0a09c }}
+
+      - name: Build with Igor
         uses: bscotch/igor-build@v1
-        id: build
         with:
-            yyp-path: ${{ steps.find_yyp.outputs.yyp-path }}
-            user-dir: ${{ steps.igor.outputs.user-dir }}
-      - name: upload build as artifact
+          yyp-path: ${{ github.workspace }}/**/*.yyp
+          user-dir: ${{ steps.igor.outputs.user-dir }}
+
+      - name: Upload build as artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-build
