@@ -13,7 +13,7 @@ jobs:
       # This step finds the yyp file in the repository and saves the path to an output
       - id: find_yyp
       - name: Find the yyp file
-        run: |
+        run:  |
           yyp=$(find ${{ github.workspace }} -name "*.yyp")
           echo "YYP file found at: $yyp"
           echo "yyp-path=$yyp" >> $(GITHUB_OUTPUT)
@@ -24,14 +24,14 @@ jobs:
           fileName: 'myTemporaryFile.keystore'
           encodedString: ${{ secrets.KEYSTORE_BASE64 }} 
       - name: Create the local-settings-override-file for igor-setup 
-        run: | 
+        run:  | 
           echo '{ "machine.Platform Settings.Android.Keystore.filename": "${{ steps.write_file.outputs.filePath }}", "machine.Platform Settings.Android.Keystore.keystore_password": "${{ WSpDRkRYVUBT }}", "machine.Platform Settings.Android.Keystore.keystore_alias_password": "${{ WSpDRkRYVUBT }}",  "machine.Platform Settings.Android.Keystore.alias": "${{ moussacre }}" # 📝 Your keystore alias }' \ > local_settings.json
       - name: Set up ffmpeg 
         uses:  FedericoCarboni/setup-ffmpeg@v3
         with:   
           ffmpeg-version: '7.0.1'
       - name: Set Up Android SDK platform-tools 
-        run: |
+        run:  |
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager \
              --sdk_root=$ANDROID_SDK_ROOT \"platform-tools"
       - name: use Igor Setup
