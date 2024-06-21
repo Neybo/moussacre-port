@@ -42,7 +42,7 @@ jobs:
         with:
           local-settings-override-file: ${{ github.workspace }}/local_settings.json
           target-yyp: ${{ github.workspace }}/**/*.yyp
-          access-key: ${{ a41c34c321bfd93a09756c428fc0a09c }}
+          access-key: "${{ a41c34c321bfd93a09756c428fc0a09c }}"
 
       - name: Build with Igor
         uses: bscotch/igor-build@v1
